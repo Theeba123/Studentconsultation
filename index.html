@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="Cache-Control"
+        content="no-cache, no-store, must-revalidate">
+
+  <meta http-equiv="Pragma"
+        content="no-cache">
+
+  <meta http-equiv="Expires"
+        content="0">
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>SAS(S) Student Consultation Portal</title>
+
+  <style>
+
+    :root {
+      --navy: #17365d;
+      --yellow: #ffd966;
+      --yellow2: #fff2cc;
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .header {
+      background: var(--navy);
+      color: white;
+      padding: 20px;
+      border-bottom: 6px solid var(--yellow);
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.8rem;
+    }
+
+    .subtitle {
+      opacity: 0.92;
+      margin-bottom: 5px;
+    }
+
+    .status {
+      font-size: 0.88rem;
+      opacity: 0.82;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    input,
+    button {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    input {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      background: white;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--yellow);
+      color: var(--navy);
+    }
+
+    .secondary {
+      background: var(--navy);
+      color: white;
+    }
+
+    .outline {
+      background: white;
+      color: var(--navy);
+      border: 1px solid var(--navy);
+    }
+
+    .student-heading {
+      background: var(--navy);
+      color: white;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .student-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .student-class {
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    .slots {
+      display: grid;
+      gap: 12px;
+    }
+
+    .slot-card {
+      background: white;
+      border-radius: 10px;
+      border-left: 7px solid var(--navy);
+      padding: 16px 18px;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.07);
+    }
+
+    .slot-header {
+      color: var(--navy);
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: pre-line;
+    }
+
+    .cell-value {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--yellow2);
+      border-radius: 8px;
+      min-height: 44px;
+      font-size: 1.08rem;
+      font-weight: 700;
+      white-space: pre-wrap;
+    }
+
+    .empty {
+      background: white;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 18px;
+      color: var(--muted);
+    }
+
+    .suggestions {
+      margin-top: 12px;
+    }
+
+    .suggestions button {
+      width: auto;
+      margin: 5px 5px 0 0;
+      min-height: 38px;
+      padding: 7px 11px;
+    }
+
+    .result-section {
+      margin-bottom: 22px;
+    }
+
+    @media (max-width: 700px) {
+
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 1.45rem;
+      }
+
+      .student-name {
+        font-size: 1.15rem;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+
+    <div class="header-inner">
+
+      <h1>SAS(S) Student Consultation Portal</h1>
+
+      <div class="subtitle">
+        Check your consultation information
+      </div>
+
+      <div id="status" class="status">
+        Loading live consultation data...
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="container">
+
+    <section class="panel">
+
+      <label for="studentInput">
+        Student Name
+      </label>
+
+      <input
+        id="studentInput"
+        list="studentList"
+        placeholder="Type your name"
+        autocomplete="off">
+
+      <datalist id="studentList"></datalist>
+
+      <div class="actions">
+
+        <button
+          id="findBtn"
+          class="primary">
+          Find My Consultation
+        </button>
+
+        <button
+          id="clearBtn"
+          class="outline">
+          Clear
+        </button>
+
+        <button
+          id="refreshBtn"
+          class="secondary">
+          Refresh Live Data
+        </button>
+
+      </div>
+
+    </section>
+
+    <section id="results"></section>
+
+  </div>
+
+<script>
+
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbx6wcoK6lyZcuRmEvUVRdViBG1nxB81Ad3_9BAbthbiB6LQL6DpOaXuC-z4fajwzOVrfw/exec";
+
+let data = null;
+let students = [];
+
+document.getElementById("findBtn")
+  .addEventListener("click", findStudent);
+
+document.getElementById("clearBtn")
+  .addEventListener("click", clearAll);
+
+document.getElementById("refreshBtn")
+  .addEventListener("click", loadData);
+
+document.getElementById("studentInput")
+  .addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      findStudent();
+    }
+  });
+
+async function loadData() {
+
+  const status =
+    document.getElementById("status");
+
+  status.textContent =
+    "Loading live consultation data...";
+
+  try {
+
+    const separator =
+      API_URL.includes("?")
+        ? "&"
+        : "?";
+
+    const response =
+      await fetch(
+        API_URL +
+        separator +
+        "t=" +
+        Date.now(),
+        {
+          cache: "no-store"
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        "HTTP " +
+        response.status
+      );
+    }
+
+    data =
+      await response.json();
+
+    if (!data.success) {
+      throw new Error(
+        data.error ||
+        "Google Sheet data could not be loaded."
+      );
+    }
+
+    students =
+      Array.isArray(data.students)
+        ? data.students
+        : [];
+
+    populateStudents();
+
+    status.textContent =
+      "Live data · " +
+      students.length +
+      " students · Updated " +
+      formatDateTime(
+        data.generatedAt
+      );
+
+    const input =
+      document
+        .getElementById("studentInput")
+        .value;
+
+    if (input.trim()) {
+      findStudent();
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    status.textContent =
+      "Unable to load live consultation data.";
+
+    document
+      .getElementById("results")
+      .innerHTML =
+        '<div class="empty">' +
+        'Consultation data could not be loaded. ' +
+        'Please refresh later.' +
+        '</div>';
+  }
+}
+
+function populateStudents() {
+
+  const list =
+    document.getElementById(
+      "studentList"
+    );
+
+  list.innerHTML = "";
+
+  students
+    .slice()
+    .sort((a, b) =>
+      a.studentName.localeCompare(
+        b.studentName
+      )
+    )
+    .forEach(student => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+      option.value =
+        student.studentName +
+        " · " +
+        student.className;
+
+      list.appendChild(
+        option
+      );
+    });
+}
+
+function findStudent() {
+
+  const rawInput =
+    document
+      .getElementById("studentInput")
+      .value
+      .trim();
+
+  if (!rawInput) {
+    showMessage(
+      "Enter your student name."
+    );
+    return;
+  }
+
+  const exactDisplayMatches =
+    students.filter(
+      student =>
+        normalizeName(
+          student.studentName +
+          " · " +
+          student.className
+        ) ===
+        normalizeName(rawInput)
+    );
+
+  if (exactDisplayMatches.length) {
+
+    renderStudents(
+      exactDisplayMatches
+    );
+
+    return;
+  }
+
+  const exactNameMatches =
+    students.filter(
+      student =>
+        normalizeName(
+          student.studentName
+        ) ===
+        normalizeName(rawInput)
+    );
+
+  if (exactNameMatches.length) {
+
+    renderStudents(
+      exactNameMatches
+    );
+
+    return;
+  }
+
+  const suggestions =
+    nearestStudents(
+      rawInput,
+      6
+    );
+
+  let html =
+    '<div class="empty">' +
+    'No exact student match found.';
+
+  if (suggestions.length) {
+
+    html +=
+      '<div class="suggestions">' +
+      '<strong>Did you mean:</strong><br>' +
+
+      suggestions
+        .map(student => {
+
+          const display =
+            student.studentName +
+            " · " +
+            student.className;
+
+          return (
+            '<button ' +
+            'class="outline" ' +
+            'onclick="chooseStudent(\'' +
+            escapeJs(display) +
+            '\')">' +
+            escapeHtml(display) +
+            '</button>'
+          );
+
+        })
+        .join("") +
+
+      '</div>';
+  }
+
+  html += '</div>';
+
+  document
+    .getElementById("results")
+    .innerHTML =
+      html;
+}
+
+function renderStudents(matches) {
+
+  let html = "";
+
+  matches.forEach(student => {
+
+    html += `
+      <section class="result-section">
+
+        <div class="student-heading">
+
+          <div class="student-name">
+            ${escapeHtml(
+              student.studentName
+            )}
+          </div>
+
+          <div class="student-class">
+            ${escapeHtml(
+              student.className
+            )}
+          </div>
+
+        </div>
+
+        <div class="slots">
+    `;
+
+    student.slots.forEach(slot => {
+
+      const header =
+        slot.header || {};
+
+      html += `
+        <div class="slot-card">
+
+          <div class="slot-header">
+            ${escapeHtml(
+              header.raw || ""
+            )}
+          </div>
+
+          <div class="cell-value">${escapeHtml(
+            slot.value ?? ""
+          )}</div>
+
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
+      </section>
+    `;
+  });
+
+  document
+    .getElementById("results")
+    .innerHTML =
+      html;
+}
+
+function nearestStudents(
+  input,
+  limit
+) {
+
+  const query =
+    normalizeName(input);
+
+  if (!query) {
+    return [];
+  }
+
+  return students
+    .map(student => {
+
+      const name =
+        normalizeName(
+          student.studentName
+        );
+
+      const words =
+        name
+          .split(" ")
+          .filter(Boolean);
+
+      let rank = 5;
+
+      let score =
+        levenshtein(
+          query,
+          name
+        );
+
+      if (name === query) {
+
+        rank = 0;
+        score = 0;
+
+      }
+
+      else if (
+        name.startsWith(query)
+      ) {
+
+        rank = 1;
+
+        score =
+          name.length -
+          query.length;
+      }
+
+      else if (
+        words.some(
+          word =>
+            word.startsWith(query)
+        )
+      ) {
+
+        rank = 2;
+
+        score =
+          Math.min(
+            ...words
+              .filter(
+                word =>
+                  word.startsWith(
+                    query
+                  )
+              )
+              .map(
+                word =>
+                  word.length -
+                  query.length
+              )
+          );
+      }
+
+      else if (
+        name.includes(query)
+      ) {
+
+        rank = 3;
+
+        score =
+          name.indexOf(query);
+      }
+
+      else {
+
+        rank = 4;
+      }
+
+      return {
+        student,
+        rank,
+        score
+      };
+    })
+
+    .sort((a, b) =>
+      a.rank -
+      b.rank ||
+
+      a.score -
+      b.score ||
+
+      a.student.studentName
+        .localeCompare(
+          b.student.studentName
+        )
+    )
+
+    .slice(
+      0,
+      limit
+    )
+
+    .map(
+      item =>
+        item.student
+    );
+}
+
+function chooseStudent(display) {
+
+  document
+    .getElementById("studentInput")
+    .value =
+      display;
+
+  findStudent();
+}
+
+function clearAll() {
+
+  document
+    .getElementById("studentInput")
+    .value = "";
+
+  document
+    .getElementById("results")
+    .innerHTML = "";
+}
+
+function normalizeName(value) {
+
+  return String(
+    value || ""
+  )
+  .replace(
+    /\u00A0/g,
+    " "
+  )
+  .replace(
+    /\s+/g,
+    " "
+  )
+  .trim()
+  .toLowerCase();
+}
+
+function levenshtein(a, b) {
+
+  const previous =
+    Array.from(
+      {
+        length:
+          b.length + 1
+      },
+      (_, index) =>
+        index
+    );
+
+  for (
+    let i = 1;
+    i <= a.length;
+    i++
+  ) {
+
+    const current = [i];
+
+    for (
+      let j = 1;
+      j <= b.length;
+      j++
+    ) {
+
+      const cost =
+        a[i - 1] ===
+        b[j - 1]
+          ? 0
+          : 1;
+
+      current[j] =
+        Math.min(
+          current[j - 1] + 1,
+          previous[j] + 1,
+          previous[j - 1] +
+          cost
+        );
+    }
+
+    for (
+      let j = 0;
+      j <= b.length;
+      j++
+    ) {
+      previous[j] =
+        current[j];
+    }
+  }
+
+  return previous[
+    b.length
+  ];
+}
+
+function formatDateTime(value) {
+
+  if (!value) {
+    return "now";
+  }
+
+  const date =
+    new Date(value);
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return String(value);
+  }
+
+  return date.toLocaleString();
+}
+
+function showMessage(message) {
+
+  document
+    .getElementById("results")
+    .innerHTML =
+      '<div class="empty">' +
+      escapeHtml(message) +
+      '</div>';
+}
+
+function escapeHtml(value) {
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+}
+
+function escapeJs(value) {
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /\\/g,
+    "\\\\"
+  )
+  .replace(
+    /'/g,
+    "\\'"
+  );
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
